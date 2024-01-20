@@ -23,13 +23,19 @@ class Asset(ABC):
         pass
 
 class Stock(Asset):
-    def __init__(self, price, company, ticker):
+    def __init__(self, ticker, price, company):
         super().__init__(price)
         self.company = company
         self.ticker = ticker
 
     def get_description(self):
         return f"{self.ticker}: {self.company} -- {self.price}"
+    
+    def __lt__(self, value):
+        return self.price < value.price
+    
+    def __str__(self):
+        return f"{self.company}, ${self.price}"
 
 class Bond(Asset):
     def __init__(self, price, description, duration, bond_yield):
@@ -41,28 +47,33 @@ class Bond(Asset):
     def get_description(self):
         return f"{self.description}: {self.duration}yr : ${self.price} : {self.bond_yield}%"
 
+    def __lt__(self, value):
+        return self.bond_yield < value.bond_yield
+    
+    def __str__(self):
+        return f"{self.description}, {self.bond_yield}%"
+
 # ~~~~~~~~~ TEST CODE ~~~~~~~~~
-try:
-   ast = Asset(100.0)
-except:
-   print("Can't instantiate Asset!")
+# ~~~~~~~~~ TEST CODE ~~~~~~~~~
+stocks = [
+    Stock("MSFT", 342.0, "Microsoft Corp"),
+    Stock("GOOG", 135.0, "Google Inc"),
+    Stock("META", 275.0, "Meta Platforms Inc"),
+    Stock("AMZN", 120.0, "Amazon Inc")
+]
 
-msft = Stock("MSFT", 342.0, "Microsoft Corp")
-goog = Stock("GOOG", 135.0, "Google Inc")
-meta = Stock("META", 275.0, "Meta Platforms Inc")
-amzn = Stock("AMZN", 135.0, "Amazon Inc")
+bonds = [
+    Bond(95.31, "30 Year US Treasury", 30, 4.38),
+    Bond(96.70, "10 Year US Treasury", 10, 4.28),
+    Bond(98.65, "5 Year US Treasury", 5, 4.43),
+    Bond(99.57, "2 Year US Treasury", 2, 4.98)
+]
 
-us30yr = Bond(95.31, "30 Year US Treasury", 30, 4.38)
-us10yr = Bond(96.70, "10 Year US Treasury", 10, 4.28)
-us5yr = Bond(98.65, "5 Year US Treasury", 5, 4.43)
-us2yr = Bond(99.57, "2 Year US Treasury", 2, 4.98)
+stocks.sort()
+bonds.sort()
 
-print(msft.get_description())
-print(goog.get_description())
-print(meta.get_description())
-print(amzn.get_description())
-
-print(us30yr.get_description())
-print(us10yr.get_description())
-print(us5yr.get_description())
-print(us2yr.get_description())
+for stock in stocks:
+    print(stock)
+print("-----------")
+for bond in bonds:
+    print(bond)
